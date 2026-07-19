@@ -1,0 +1,20 @@
+# ============================================================
+# requirements.txt — khusus untuk menjalankan app.py di Railway
+# (bukan untuk notebook OCR/training, itu proses terpisah yang
+# sudah selesai kamu jalankan di local)
+# ============================================================
+
+# Torch versi CPU-only — WAJIB pakai baris --extra-index-url ini,
+# kalau tidak, pip akan narik build CUDA yang ukurannya berGB-GB
+# dan bikin build di Railway lambat/gagal (Railway server tidak
+# punya GPU, jadi CUDA build itu mubazir).
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+streamlit==1.48.1
+torch==2.9.1
+transformers==4.57.1
+sentence-transformers==5.1.0
+faiss-cpu==1.13.0
+groq==1.5.0
+fpdf2==2.8.7
+numpy==1.26.4

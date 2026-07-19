@@ -1,0 +1,64 @@
+# ============================================================
+# Rahasia & environment
+# ============================================================
+.env
+.streamlit/secrets.toml
+
+# ============================================================
+# Virtual environment & cache Python
+# ============================================================
+venv_stabil/
+__pycache__/
+*.pyc
+
+# ============================================================
+# Tools lokal (tidak dipakai Railway sama sekali)
+# ============================================================
+poppler-26.0.2.0/
+ngrok.exe
+
+# ============================================================
+# Checkpoint training (BUKAN model final) — biasanya besar
+# karena masih nyimpen optimizer state. Yang dipakai app.py
+# cuma emotion_model_final/, jadi ini AMAN di-ignore.
+# ============================================================
+emotion_model_checkpoint/
+emotion_model_checkpoint_v2/
+
+# ============================================================
+# Bahan mentah / hasil antara notebook (OCR, training emosi)
+# — sudah "dibekukan" jadi faiss_index.index & chunks.pkl,
+# jadi file mentahnya tidak perlu ikut di-push
+# ============================================================
+UU_TPKS.pdf
+UU_TPKS_pages.pkl
+penjelasan_start.pkl
+emot_train.csv
+emot_valid.csv
+kamus_alay.csv
+faiss_index_l2.index
+
+# ============================================================
+# Laporan/log — bukti tugas, bukan dependency aplikasi
+# ============================================================
+confusion_matrix_emotion.png
+confusion_matrix_v2.png
+confusion_matrix_v3.png
+streamlit_log.txt
+
+# ============================================================
+# requirements versi lain yang tidak dipakai (biar nggak bikin
+# bingung Railway file mana yang dibaca — Railway baca
+# requirements.txt secara default)
+# ============================================================
+requirements_all.txt
+requirements_railway.txt
+
+venv_stabil/
+__pycache__/
+.ipynb_checkpoints/
+emotion_model_checkpoint/
+*.pt
+*.ckpt
+*.log
+.env
