@@ -10,7 +10,6 @@ from streamlit.components.v1 import html as components_html
 from sentence_transformers import SentenceTransformer
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from groq import Groq
-from streamlit.components.v1 import html as components_html
 
 
 st.set_page_config(page_title="Ruang Aman - Konseling Hukum UU TPKS",
