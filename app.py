@@ -11,7 +11,6 @@ from sentence_transformers import SentenceTransformer
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from groq import Groq
 
-
 st.set_page_config(page_title="Ruang Aman - Konseling Hukum UU TPKS",
                    page_icon="\U0001f49b", layout="wide",
                    initial_sidebar_state="expanded")
@@ -42,6 +41,7 @@ def detect_emotion(text: str) -> dict:
     dominant = max(scores, key=scores.get)
     return {"label_dominan": dominant, "confidence": scores[dominant], "semua_skor": scores}
 
+
 DISTRESS_MAP = {
     "sadness": "tinggi",
     "fear": "tinggi",
@@ -69,7 +69,7 @@ def get_support_flag(text: str, threshold: float = 0.5, sadness_safety_threshold
 def generate_ai_support_label(api_key, emotion: str, user_text: str) -> str:
     if not api_key:
         return "Siap membantu dan mendengarkan ceritamu."
-        
+
     # Arahan spesifik berdasarkan emosi yang terdeteksi
     instruction_map = {
         "sadness": "berikan 1 kalimat penguat yang sangat lembut, tunjukkan empati mendalam dan bahwa kamu ada untuknya.",
@@ -78,9 +78,9 @@ def generate_ai_support_label(api_key, emotion: str, user_text: str) -> str:
         "happy": "berikan 1 kalimat ikut senang, antusias, dan mengapresiasi kabar baik atau energi positifnya.",
         "love": "berikan 1 kalimat apresiasi yang hangat atas kasih sayang atau cerita indahnya."
     }
-    
+
     context_instruction = instruction_map.get(emotion, "berikan 1 kalimat respons yang hangat dan suportif.")
-    
+
     system_prompt = (
         f"Kamu adalah konselor psikologis yang sangat empatik dan peka. "
         f"User baru saja bercerita dan sistem mendeteksi emosinya adalah '{emotion}'. "
@@ -90,12 +90,12 @@ def generate_ai_support_label(api_key, emotion: str, user_text: str) -> str:
         "- Gunakan bahasa Indonesia santai/kasual yang sangat natural seperti teman dekat (jangan kaku/formal).\n"
         "- DILARANG memakai tanda kutip atau kalimat pengantar seperti 'Ini kalimatnya:'."
     )
-    
+
     try:
         client = Groq(api_key=api_key)
         # Gunakan model 8B agar super cepat (low latency)
         completion = client.chat.completions.create(
-            model="llama-3.1-8b-instant", 
+            model="llama-3.1-8b-instant",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": f"Pesan user: {user_text}"}
@@ -206,7 +206,7 @@ def inject_css(t):
         font-size:15px;
         color:{t['header_sub']};
     }}
-    
+
     /* ============ KARTU 6 FITUR — scoped ke container(key="fitur_grid") ============ */
     .st-key-fitur_grid [data-testid="column"] {{
         display: flex;
@@ -233,7 +233,7 @@ def inject_css(t):
     .st-key-f1 button, .st-key-f3 button, .st-key-f5 button {{
         background:linear-gradient(135deg, {t['navy']} 0%, {t['mauve']} 100%) !important;
     }}
-   
+
     /* ============ SAFETY NET —  ============ */
     div[data-testid="stVerticalBlockBorderWrapper"],
     div[data-testid="stVerticalBlock"] > div[style*="background"],
@@ -271,7 +271,7 @@ def inject_css(t):
     [data-testid="stChatMessageContent"] p, [data-testid="stChatMessageContent"] li {{
         font-size:14.8px; line-height:1.7;
     }}
-    
+
     /* ============ AVATAR — target struktural, tidak bergantung nama testid ============ */
     [data-testid="stChatMessage"] > div:first-child,
     [data-testid="stChatMessage"] [data-testid*="Avatar" i],
@@ -363,7 +363,7 @@ def inject_css(t):
         text-align:center; font-style:italic; font-size:12px; color:{t['navy']};
         margin-bottom:14px; opacity:.85;
     }}
-    
+
     section[data-testid="stSidebar"] div.stButton > button {{
         background:{t['navy']}; color:#fff !important; border:none; font-weight:600;
         border-radius:14px; padding:12px 14px; box-shadow:0 6px 14px rgba(14,27,72,.2);
@@ -504,7 +504,7 @@ def inject_css(t):
         color: {t['navy']} !important;
         opacity: 0.85 !important;
     }}
-    
+
     /* ============ MERAPIKAN WIDGET RADIO BUTTON SIDEBAR ============ */
     /* Merapikan label utama "Ukuran teks" */
     section[data-testid="stSidebar"] div[data-testid="stRadio"] label p {{
@@ -513,12 +513,12 @@ def inject_css(t):
         color: {t['navy']} !important;
         margin-bottom: 8px !important;
     }}
-    
+
     /* Memberikan jarak renggang yang proporsional antar opsi pilihan */
     section[data-testid="stSidebar"] div[data-testid="stRadio"] [data-testid="stWidgetLabel"] + div {{
         gap: 16px !important;
     }}
-    
+
     /* Mengatur teks opsi (Kecil, Sedang, Besar) agar lebih tegas */
     section[data-testid="stSidebar"] div[data-testid="stRadio"] div[data-testid="stMarkdownContainer"] p {{
         font-size: 13px !important;
@@ -539,117 +539,78 @@ def inject_css(t):
     }}
     .st-key-chip_row div.stButton > button:hover p {{ color:#fff !important; }}
 
-   /* ============ INPUT CHAT - OBLITERASI TOTAL KOTAK & HOVER MERAH ============ */
+    /* ============================================================ */
+    /* INPUT CHAT — dibangun ulang total (versi lama punya bug:      */
+    /* kotak persegi mengintip di belakang tombol bulat, dan cursor  */
+    /* berubah jadi ikon "dilarang" / lingkaran merah saat hover).   */
+    /* ============================================================ */
     [data-testid="stChatInput"] {{
         background: rgba(255, 255, 255, 0.96) !important;
         border: 1.5px solid {t['skyblue']} !important;
         border-radius: 40px !important;
         box-shadow: 0 4px 14px rgba(14, 27, 72, 0.15) !important;
     }}
-    
+
     [data-testid="stChatInput"] * {{
-        background-color: transparent !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        outline: none !important;
+        filter: none !important;
     }}
-    
+
     [data-testid="stBottom"] {{
         background: {t['deep']} !important;
     }}
-    
+
     div[data-testid="stBottomBlockContainer"] {{
         max-width: 100% !important;
         padding-left: 30px !important;
         padding-right: 30px !important;
         background: {t['deep']} !important;
     }}
-    
+
     div[data-testid="stBottom"] > div {{
         background: transparent !important;
     }}
-    
+
     [data-testid="stChatInput"] textarea {{
         color: {t['navy']} !important;
         -webkit-text-fill-color: {t['navy']} !important;
         caret-color: {t['navy']} !important;
         font-size: 15px !important;
     }}
-    
+
     [data-testid="stChatInput"] textarea::placeholder {{
         color: #9aa3b5 !important;
         -webkit-text-fill-color: #9aa3b5 !important;
         opacity: 1 !important;
     }}
-    
+
     [data-testid="stChatInput"]:focus-within {{
         border-color: {t['active']} !important;
         box-shadow: 0 0 0 3px rgba(241, 145, 109, 0.2) !important;
     }}
-    
-    /* ============ MIC DOCK — sejajar persis dgn tombol kirim, tumbuh ke kiri saat merekam ============ */
-    .st-key-mic_dock {{
-        position: fixed !important;
-        right: 90px !important;
-        bottom: 70px !important;
-        z-index: 999999 !important;
-        width: auto !important;
-        display: block !important;
-    }}
-    .st-key-mic_dock > div {{
-        width: auto !important;
-    }}
-    /* Default (belum ada rekaman): bulat kecil, cuma ikon mic */
-    .st-key-mic_dock [data-testid="stAudioInput"] {{
-        background: {t['mauve']} !important;
-        border-radius: 999px !important;
-        height: 32px !important;
-        min-height: 32px !important;
-        min-width: 32px !important;
-        width: auto !important;
-        max-width: 220px !important;
-        padding: 0 8px !important;
-        display: flex !important;
-        align-items: center !important;
-        gap: 6px !important;
-        overflow: hidden !important;
-        white-space: nowrap !important;
-        box-shadow: 0 4px 12px rgba(14,27,72,.25) !important;
-    }}
-    /* Setelah ada rekaman (widget berisi elemen <audio>): otomatis melebar ke kiri (karena anchor 'right' tetap) */
-    .st-key-mic_dock [data-testid="stAudioInput"]:has(audio) {{
-        padding: 0 12px !important;
-    }}
-    .st-key-mic_dock [data-testid="stAudioInput"] * {{
+
+    /* 1. Wrapper di sekitar tombol kirim — pakai flush ke semua level
+          div di dalam stChatInput agar tidak ada bg/kotak sisa yang
+          mengintip di belakang lingkaran. Ini jauh lebih robust tanpa
+          :has() yang rentan mismatch antar versi browser/Streamlit. */
+    [data-testid="stChatInput"] > div,
+    [data-testid="stChatInput"] > div > div,
+    [data-testid="stChatInput"] > div > div > div,
+    [data-testid="stChatInput"] > div > div > div > div {{
         background: transparent !important;
-        white-space: nowrap !important;
+        border: none !important;
+        box-shadow: none !important;
     }}
-    .st-key-mic_dock [data-testid="stAudioInput"] button {{
-        color: #FFFFFF !important;
-        flex-shrink: 0 !important;
+    /* Kembalikan background container utama agar tetap terlihat */
+    [data-testid="stChatInput"] {{
+        background: rgba(255, 255, 255, 0.96) !important;
+        border: 1.5px solid {t['skyblue']} !important;
     }}
-    .st-key-mic_dock [data-testid="stAudioInput"] span,
-    .st-key-mic_dock [data-testid="stAudioInput"] p {{
-        color: #FFFFFF !important;
-        font-size: 11px !important;
-    }}
-    .st-key-mic_dock [data-testid="stAudioInput"] {{
-    background: {t['mauve']} !important;
-    border-radius: 999px !important;
-    height: 32px !important;
-    min-height: 32px !important;
-    min-width: 32px !important;
-    width: auto !important;
-    max-width: 220px !important;
-    padding: 0 8px !important;
-    display: flex !important;
-    flex-direction: row-reverse !important;   /* <-- baris baru: kunci ikon di ujung kanan */
-    justify-content: flex-start !important;   /* <-- baris baru: rapatkan grup ke titik anchor */
-    align-items: center !important;
-    gap: 6px !important;
-    overflow: hidden !important;
-    white-space: nowrap !important;
-    box-shadow: 0 4px 12px rgba(14,27,72,.25) !important;
-    }}
-    
-    /* 🔥 TOMBOL INDUK: Kunci bentuk lingkaran sempurna & ukuran presisi 🔥 */
+
+    /* 2. Tombol bulat itu sendiri */
     [data-testid="stChatInput"] button,
     [data-testid="stChatInputSubmitButton"] {{
         background-color: {t['mauve']} !important;
@@ -660,60 +621,89 @@ def inject_css(t):
         padding: 6px !important;
         width: 32px !important;
         height: 32px !important;
+        min-width: 32px !important;
+        min-height: 32px !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
-        transition: all 0.2s ease !important;
+        overflow: hidden !important;
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        transition: filter 0.2s ease, background-color 0.2s ease !important;
     }}
-    
-    /* 🔥 KUNCI UTAMA (HOVER & FOCUS PROTECTION): Mencegah tombol berubah jadi blok merah 🔥 */
-    [data-testid="stChatInput"] button:hover,
-    [data-testid="stChatInputSubmitButton"]:hover,
-    [data-testid="stChatInput"] button:active,
+
+    /* 3. Cursor & hover — kunci fix untuk "block merah" saat hover.
+          Browser menampilkan cursor "not-allowed" (lingkaran dicoret,
+          sering kelihatan kemerahan di Windows) kalau tombolnya dalam
+          state disabled (mis. textarea masih kosong). Di sini kita
+          bedakan tegas: aktif = pointer, nonaktif = not-allowed tapi
+          dengan tampilan pudar yang jelas, bukan tombol yang kelihatan
+          normal tapi cursor-nya nyasar. */
+    [data-testid="stChatInput"] button:not(:disabled),
+    [data-testid="stChatInputSubmitButton"]:not(:disabled) {{
+        cursor: pointer !important;
+    }}
+    [data-testid="stChatInput"] button:disabled,
+    [data-testid="stChatInputSubmitButton"]:disabled,
+    [data-testid="stChatInput"] button[disabled],
+    [data-testid="stChatInputSubmitButton"][disabled] {{
+        cursor: not-allowed !important;
+        background-color: rgba(193, 141, 180, 0.45) !important;
+    }}
+
+    [data-testid="stChatInput"] button:hover:not(:disabled),
+    [data-testid="stChatInputSubmitButton"]:hover:not(:disabled),
+    [data-testid="stChatInput"] button:active:not(:disabled),
+    [data-testid="stChatInputSubmitButton"]:active:not(:disabled) {{
+        background-color: {t['mauve']} !important;
+        filter: brightness(0.88) !important;
+    }}
     [data-testid="stChatInput"] button:focus,
-    [data-testid="stChatInput"] button:focus-visible {{
-        background-color: {t['mauve']} !important; /* Paksa tetap berwarna mauve */
-        filter: brightness(0.88) !important; /* Memberikan efek hover gelap yang elegan & smooth, BUKAN merah */
-        border: none !important;
+    [data-testid="stChatInputSubmitButton"]:focus,
+    [data-testid="stChatInput"] button:focus-visible,
+    [data-testid="stChatInputSubmitButton"]:focus-visible {{
         outline: none !important;
-        box-shadow: none !important;
+        box-shadow: 0 0 0 3px rgba(193, 141, 180, 0.35) !important;
     }}
-    
-    /* 🔥 ANTI-KOTAK PUTIH: Hancurkan paksa sisa garis kotak di elemen dalam saat hover/focus 🔥 */
+
+    /* 4. Bersihkan elemen anak (svg wrapper, span, dll) dari border/bg sisa */
     [data-testid="stChatInput"] button *,
-    [data-testid="stChatInputSubmitButton"] *,
-    [data-testid="stChatInput"] button div,
-    [data-testid="stChatInput"] button span {{
+    [data-testid="stChatInputSubmitButton"] * {{
         border: none !important;
-        border-width: 0px !important;
         outline: none !important;
-        outline-style: none !important;
-        outline-width: 0px !important;
         box-shadow: none !important;
         background: transparent !important;
-        background-color: transparent !important;
     }}
-    
-    /* Singkirkan sisa rect grafis pembungkus bawaan SVG jika ada */
     [data-testid="stChatInput"] button svg rect,
     [data-testid="stChatInputSubmitButton"] svg rect {{
         display: none !important;
-        stroke: transparent !important;
-        fill: transparent !important;
     }}
-    
-    /* 🔥 PROTEKSI PANAH UTAMA: Memastikan ikon panah tetap menyala putih bersih & proporsional 🔥 */
-    [data-testid="stChatInput"] button svg,
+
+    /* 5. Ikon tombol kirim — sama kayak mic, SVG Material Icon dgn bounding-box
+          path (fill="none" bawaan). fill putih + stroke none biar bounding-box
+          tetap invisible dan panah-nya keliatan solid putih. */
     [data-testid="stChatInputSubmitButton"] svg {{
         display: inline-block !important;
         color: #FFFFFF !important;
-        stroke: #FFFFFF !important;
-        stroke-width: 2.5px !important;
-        fill: none !important;
+        fill: #FFFFFF !important;
+        stroke: none !important;
         width: 18px !important;
         height: 18px !important;
-        border: none !important;
-        outline: none !important;
+    }}
+
+    /* 6. Ikon mic — SVG-nya Google Material Icon: path ke-1 cuma bounding-box
+          placeholder (fill="none" bawaan, HARUS tetap invisible), path ke-2 baru
+          bentuk mic beneran, digambar pakai fill bukan stroke. Rule lama maksa
+          stroke:white ke-inherit ke path ke-1 -> kotak invisible-nya jadi keliatan.
+          Fix: fill putih (buat mic-nya), stroke none (biar kotak placeholder
+          tetap invisible, cuma path ke-1 yang punya fill="none" sendiri jadi
+          tetap ketutup, path ke-2 ikutan fill putih dari inherit). */
+    [data-testid="stChatInputMicButton"] svg {{
+        color: #FFFFFF !important;
+        fill: #FFFFFF !important;
+        stroke: none !important;
+        width: 18px !important;
+        height: 18px !important;
     }}
 
     .disclaimer {{ font-size:11px; line-height:1.55; color:{t['slate']} !important; margin-top:14px;
@@ -736,9 +726,9 @@ FITUR = [
      "Saya mengalami situasi yang mungkin termasuk kekerasan seksual. Bisa bantu saya memahami apa yang terjadi?"),
     ("\U0001f4d1 Jenis & Pasal", "Jenis TPKS dan dasar hukumnya",
      "Apa saja jenis tindak pidana kekerasan seksual dalam UU TPKS?"),
-    ("\u2696\ufe0f Ancaman Pidana", "Sanksi penjara & denda",
+    ("⚖️ Ancaman Pidana", "Sanksi penjara & denda",
      "Berapa ancaman pidana untuk pelecehan seksual fisik dan eksploitasi seksual?"),
-    ("\U0001f6e1\ufe0f Hak Korban", "Restitusi & pemulihan",
+    ("\U0001f6e1️ Hak Korban", "Restitusi & pemulihan",
      "Apa saja hak korban dan bagaimana mekanisme restitusi menurut UU TPKS?"),
     ("\U0001f4cb Alur Melapor", "Langkah lapor & pembuktian",
      "Bagaimana cara melapor kasus kekerasan seksual dan alat bukti apa yang diakui?"),
@@ -748,7 +738,7 @@ FITUR = [
 
 MENU_ITEMS = [
     ("konseling", "\U0001f91d", "Konseling"),
-    ("pasal", "\u2696\ufe0f", "Telusur Pasal"),
+    ("pasal", "⚖️", "Telusur Pasal"),
     ("lapor", "\U0001f4cb", "Panduan Lapor"),
 ]
 MENU_LABELS = {"konseling": "Konseling", "pasal": "Telusur Pasal", "lapor": "Panduan Lapor"}
@@ -785,7 +775,7 @@ PRINSIP WAJIB:
   jangan dipaksa disebut. Kalau nggak ada yang pas, jangan sebut pasal sama sekali.
 - DILARANG MUTLAK menyebut kata "konteks", "kutipan", atau "yang diberikan/disediakan/
   tersedia" dalam bentuk apapun. User nggak tahu ada proses retrieval di baliknya. Kalau
-  pasal nggak ada yang pas, LEWATI SAJA tanpa bilang "tidak ada info" — fokus ke dukungan/
+  pasal nggak ada yang pas, LEWATI SAJA tanpa billing "tidak ada info" — fokus ke dukungan/
   panduannya aja.
 - Sapaan WAJIB konsisten "kamu" dari awal sampai akhir. JANGAN PERNAH pakai "Anda".
 - HINDARI kata "saya"/"aku" sama sekali saat chatbot merujuk ke dirinya sendiri. Tulis
@@ -809,8 +799,9 @@ PRINSIP WAJIB:
   yang berbunyi "Kalau [situasi]...", "Posisi/Keadaan/Situasi [X] itu...", "Kamu sudah/sedang...".
   Contoh BENAR: "Menolak permintaan itu adalah hakmu, dan penolakan itu sendiri sudah cukup —
   nggak perlu alasan tambahan." Contoh SALAH: "Kalau pacarmu meminta hal itu, itu bisa membuatmu
-  tidak nyaman." (ini parafrase, dilarang)"""
-
+  tidak nyaman." (ini parafrase, dilarang)
+- WAJIB menyelipkan emoji/emoticon yang relevan, hangat, dan menenangkan di setiap respons (misalnya: 🫂, 💛, 🛡️, ✨) di dalam bubble chat agar terasa suportif dan ramah.
+"""
 PROMPTS = {
 "konseling": BASE + '''
 
@@ -833,7 +824,8 @@ JAGA KESELAMATAN EMOSIONAL — INI PRIORITAS DI ATAS INFORMASI HUKUM:
   Tawarkan opsi, bukan instruksi. Hormati kalau dia belum siap atau belum mau bertindak.
 - Kalau user menunjukkan tanda distress berat (putus asa, menyalahkan diri berlebihan,
   menyebut ingin menyakiti diri), JANGAN lanjut bahas pasal/hukum dulu — fokus ke stabilisasi
-  emosinya dan arahkan ke bantuan profesional/hotline dengan tenang, bukan dengan panik.
+  emosinya dan arahkan ke bantuan profesional/hotline dengan tenang, bukan dengan nada
+  panik atau menghakimi.
 - Jangan membombardir dengan banyak istilah hukum sekaligus kalau user kelihatan rapuh —
   cukup satu poin paling penting per respons, sisanya bisa nunggu giliran berikutnya.''',
 
@@ -869,7 +861,6 @@ def groq_answer(api_key, user_input, history, mode, support_info):
         )
 
     user_msg = f"PERTANYAAN PENGGUNA:\n{user_input}\n\nKONTEKS PASAL UU TPKS (relevansi {sim:.0%}):\n{context}"
-    # ... sisanya (msgs, groq_keys, stream, dst) TETAP SAMA, gak perlu diubah
     msgs = [{"role": "system", "content": system_prompt}]
     for h in history[-6:]:
         msgs.append({"role": h["role"], "content": h["content"]})
@@ -893,12 +884,23 @@ def groq_answer(api_key, user_input, history, mode, support_info):
             print(f"[GROQ key #{idx+1} GAGAL] {type(e).__name__}: {e}", flush=True)
             continue
 
-    yield "\u26a0\ufe0f Groq sedang limit. Coba lagi beberapa saat lagi.\n\nKalau mendesak, hubungi **SAPA 129**."
+    yield "⚠️ Groq sedang limit. Coba lagi beberapa saat lagi.\n\nKalau mendesak, hubungi **SAPA 129**."
+def transcribe_audio(audio_bytes_io, groq_client, model_name="whisper-large-v3-turbo"):
+    """Kirim audio ke Groq Whisper, kembalikan teks hasil transkripsi (Bahasa Indonesia)."""
+    audio_bytes_io.seek(0)
+    transcription = groq_client.audio.transcriptions.create(
+        file=("input.wav", audio_bytes_io.read()),
+        model=model_name,
+        language="id",          # paksa Bahasa Indonesia, lebih akurat & lebih cepat
+        response_format="text",
+        temperature=0.0,
+    )
+    return transcription.strip() if isinstance(transcription, str) else transcription.text.strip()
 
 def _pdf_sanitize(text):
     replacements = {
-        "\u2014": "-", "\u2013": "-", "\u2018": "'", "\u2019": "'",
-        "\u201c": '"', "\u201d": '"', "\u2026": "...",
+        "—": "-", "–": "-", "‘": "'", "’": "'",
+        "“": '"', "”": '"', "…": "...",
         "═": "=", "─": "-", "\U0001f49b": "", "\U0001f464": "",
     }
     for k, v in replacements.items():
@@ -960,8 +962,7 @@ def build_transcript_pdf():
 
     return bytes(pdf.output())
 
-for k, v in [("messages", []), ("active_menu", "konseling"), ("pending", None),
-             ("last_audio_hash", None), ("text_size", "Sedang")]:
+for k, v in [("messages", []), ("active_menu", "konseling"), ("pending", None), ("text_size", "Sedang"), ("last_emotion_result", None)]:
     if k not in st.session_state: st.session_state[k] = v
 if "session_started" not in st.session_state:
     st.session_state.session_started = datetime.now()
@@ -1082,7 +1083,7 @@ with st.sidebar:
         '<div class="sidebar-brand-sub">Privasi terjaga, Ceritamu berharga!</div>',
         unsafe_allow_html=True)
 
-    if st.button("\u2795  Konsultasi baru", use_container_width=True):
+    if st.button("➕  Konsultasi baru", use_container_width=True):
         st.session_state.messages = []; st.session_state.pending = None; st.rerun()
 
     if st.session_state.messages:
@@ -1119,35 +1120,32 @@ with st.sidebar:
         value=False,
         help="Menampilkan bagaimana Ruang Aman menyesuaikan gaya responsnya berdasarkan konteks percakapan."
     )
-    
+
     if tampilkan_emosi:
         last = st.session_state.get("last_emotion_result")
-        
-        # Emoji tetap kita petakan secara statis agar ikonnya sesuai emosi
+
         emoji_map = {"sadness": "🫂", "fear": "🏡", "anger": "🍃", "happy": "🥰", "love": "💖"}
         current_emoji = emoji_map.get(last["label_dominan"], "💬") if last else "💬"
-        
-        # Mengambil kalimat dinamis hasil generate AI (jika belum ada pesan, pakai default)
+
         current_label = last["ai_label"] if last else "Siap membantu proses konselingmu."
-        
+
         st.markdown(f"""
             <div style="padding:12px; border-radius:14px; background-color:rgba(255,255,255,0.35); text-align:center;">
                 <div style="font-size:28px;">{current_emoji}</div>
                 <div style="font-size:13px; margin-top:4px; color:{T['navy']}; font-weight:500;">{current_label}</div>
             </div>""", unsafe_allow_html=True)
         st.caption("⚠️ Estimasi otomatis berdasarkan pesan terakhirmu.")
-    
+
     with st.expander("⚙️  Pengaturan"):
         st.markdown("""
             <div class="settings-info-card">
                 <div class="settings-info-title">🚨 Keluar Cepat</div>
                 <div class="settings-info-desc">
-                    Tombol merah di pojok kanan atas akan langsung menghapus seluruh riwayat obrolan secara permanen dan mengalihkan browser ke Google demi menjaga privasimu.
+                    Tombol merah di pojok kiri atas akan langsung menghapus seluruh riwayat obrolan secara permanen dan mengalihkan browser ke Google demi menjaga privasimu.
                 </div>
             </div>
         """, unsafe_allow_html=True)
-        
-        # Widget bawaan tetap berfungsi penuh dan otomatis ter-style oleh CSS baru
+
         size_choice = st.radio(
             "🔠 Ukuran teks",
             options=["Kecil", "Sedang", "Besar"],
@@ -1173,6 +1171,8 @@ with st.sidebar:
 
     st.markdown('<div class="disclaimer">Ruang Aman memberi informasi berbasis UU No. 12 Tahun 2022. '
                 'Bukan pengganti advokat/lembaga resmi. Darurat? <b>SAPA 129</b>.</div>', unsafe_allow_html=True)
+
+groq_client = Groq(api_key=api_key) if api_key else None
 
 mode_key = st.session_state.active_menu
 
@@ -1216,39 +1216,29 @@ with chip_container:
             if st.button(label, key=f"chip_{i}", use_container_width=True):
                 st.session_state.pending = prompt; st.rerun()
 
-# ===================== INPUT SUARA =====================
-if "audio_widget_key" not in st.session_state:
-    st.session_state.audio_widget_key = 0
+# ===================== INPUT BAR — mic native, satu widget sama teks =====================
+# accept_audio=True bikin tombol mic jadi bagian dari chat_input itu sendiri, jadi otomatis
+# ke-pin di posisi yang sama (chat_input SELALU dirender Streamlit di container fixed bawah,
+# sedangkan audio_input terpisah dulu nggak ikut ke-pin -> itu penyebab mic "geser" posisinya).
+prompt = st.chat_input(
+    "Tuliskan pesanmu di sini...",
+    accept_audio=True,
+    audio_sample_rate=16000,
+)
+user_input = None
+if prompt:
+    if prompt.audio is not None:
+        with st.spinner("Mentranskripsi suara..."):
+            try:
+                if not groq_client:
+                    st.warning("🔑 GROQ_API_KEY belum diatur — transkripsi audio tidak tersedia.")
+                else:
+                    user_input = transcribe_audio(prompt.audio, groq_client)
+            except Exception as e:
+                st.warning(f"Gagal mentranskripsi audio: {e}")
+    elif prompt.text:
+        user_input = prompt.text
 
-mic_dock = st.container(key="mic_dock")
-with mic_dock:
-    audio_value = st.audio_input(
-        "Rekam suara", label_visibility="collapsed",
-        key=f"audio_input_{st.session_state.audio_widget_key}",
-    )
-    if audio_value is not None:
-        audio_bytes = audio_value.getvalue()
-        audio_hash = hash(audio_bytes)
-        if st.session_state.get("last_audio_hash") != audio_hash:
-            st.session_state.last_audio_hash = audio_hash
-            if not api_key:
-                st.warning("Groq API Key belum ada, tidak bisa transkripsi suara.")
-            else:
-                with st.spinner(""):
-                    try:
-                        client = Groq(api_key=api_key)
-                        transcript = client.audio.transcriptions.create(
-                            file=("rekaman.wav", audio_bytes),
-                            model="whisper-large-v3",
-                            language="id",
-                        )
-                        st.session_state.pending = transcript.text
-                        st.session_state.audio_widget_key += 1  # widget reset -> rekaman lama hilang
-                        st.rerun()
-                    except Exception as e:
-                        st.error(f"Gagal mentranskripsi suara: {e}")
-
-user_input = st.chat_input("Tuliskan pesanmu di sini...")
 if st.session_state.pending and not user_input:
     user_input = st.session_state.pending; st.session_state.pending = None
 
@@ -1259,18 +1249,16 @@ if user_input:
 
     # 1. Deteksi emosi dasar dari model lokal
     support_info = get_support_flag(user_input)
-    
+
     # 2. Panggil AI untuk membuat kalimat support dinamis yang unik
     ai_dynamic_label = generate_ai_support_label(api_key, support_info["emosi"], user_input)
-    
+
     # 3. Simpan hasilnya ke session state (termasuk kalimat dari AI tadi)
     st.session_state["last_emotion_result"] = {
         "label_dominan": support_info["emosi"],
         "confidence": support_info["confidence"],
-        "ai_label": ai_dynamic_label  # <-- Disimpan di sini
+        "ai_label": ai_dynamic_label
     }
-
-    # ... (sisa kode st.chat_message("assistant") untuk streaming jawaban hukum tetap sama)
 
     with st.chat_message("assistant", avatar="\U0001f49b"):
         banner_text = None
