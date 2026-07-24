@@ -123,59 +123,131 @@ def inject_css(t):
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;450;500;600&display=swap');
 
+    @keyframes float-orb {{
+        0%,100% {{ transform:translate(0,0) scale(1); opacity:0.18; }}
+        25% {{ transform:translate(30px,-40px) scale(1.08); opacity:0.25; }}
+        50% {{ transform:translate(-20px,-70px) scale(0.95); opacity:0.15; }}
+        75% {{ transform:translate(40px,-20px) scale(1.05); opacity:0.22; }}
+    }}
+    @keyframes glow-pulse {{
+        0%,100% {{ box-shadow:0 10px 24px rgba(193,141,180,.4); }}
+        50% {{ box-shadow:0 10px 36px rgba(193,141,180,.65), 0 0 60px rgba(193,141,180,.2); }}
+    }}
+    @keyframes shimmer {{
+        0% {{ background-position:-200% center; }}
+        100% {{ background-position:200% center; }}
+    }}
+    @keyframes fade-in-up {{
+        from {{ opacity:0; transform:translateY(18px); }}
+        to {{ opacity:1; transform:translateY(0); }}
+    }}
+    @keyframes slide-in-left {{
+        from {{ opacity:0; transform:translateX(-24px); }}
+        to {{ opacity:1; transform:translateX(0); }}
+    }}
+    @keyframes slide-in-right {{
+        from {{ opacity:0; transform:translateX(24px); }}
+        to {{ opacity:1; transform:translateX(0); }}
+    }}
+    @keyframes dot-bounce {{
+        0%,60%,100% {{ transform:translateY(0); }}
+        30% {{ transform:translateY(-6px); }}
+    }}
+    @keyframes sidebar-logo-spin {{
+        0%,100% {{ transform:rotate(0deg) scale(1); }}
+        50% {{ transform:rotate(8deg) scale(1.05); }}
+    }}
+
     .stApp {{
         background:{t['appbg']};
         background-attachment:fixed;
         background-size:200% 200%;
+        position:relative;
+        overflow:hidden;
     }}
+
+    .floating-orb {{
+        position:fixed; border-radius:50%; pointer-events:none; z-index:0;
+        filter:blur(70px); will-change:transform;
+    }}
+    .orb-1 {{ width:320px; height:320px; top:-80px; left:-60px; background:{t['mauve']}; animation:float-orb 14s ease-in-out infinite; }}
+    .orb-2 {{ width:260px; height:260px; bottom:10%; right:-40px; background:{t['skyblue']}; animation:float-orb 18s ease-in-out infinite 2s; }}
+    .orb-3 {{ width:200px; height:200px; top:40%; left:50%; background:{t['blush']}; animation:float-orb 16s ease-in-out infinite 4s; }}
+
     html, body, [class*="css"], .stMarkdown, p, span, label, div {{ font-family:'Inter',sans-serif; }}
     h1,h2,h3, .hero-title, .brand h1 {{ font-family:'Plus Jakarta Sans',sans-serif; }}
     #MainMenu, footer {{ visibility:hidden; }}
     header[data-testid="stHeader"] {{ display:none !important; }}
-    .block-container {{ max-width:860px; padding-top:2rem !important; }}
+    .block-container {{ max-width:860px; padding-top:2rem !important; position:relative; z-index:1; }}
+
+    ::-webkit-scrollbar {{ width:6px; }}
+    ::-webkit-scrollbar-track {{ background:transparent; }}
+    ::-webkit-scrollbar-thumb {{ background:rgba(193,141,180,.4); border-radius:10px; }}
+    ::-webkit-scrollbar-thumb:hover {{ background:rgba(193,141,180,.65); }}
 
     .glass-panel {{
-        background: rgba(255,255,255,0.14);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(255,255,255,0.25);
+        background: rgba(255,255,255,0.12);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255,255,255,0.22);
         border-radius: 24px;
-        padding: 18px 20px 8px;
+        padding: 22px 24px 12px;
         margin-bottom: 14px;
         box-shadow: 0 8px 32px rgba(14,27,72,.18);
     }}
 
-    .main-chat-header {{ text-align:center; margin:4px 0 18px; }}
+    .main-chat-header {{
+        text-align:center; margin:8px 0 22px;
+        animation:fade-in-up 0.7s ease-out;
+    }}
     .main-chat-header .logo-badge {{
-        width:56px; height:56px; margin:0 auto 12px; border-radius:16px;
+        width:64px; height:64px; margin:0 auto 14px; border-radius:18px;
         background:linear-gradient(135deg, {t['mauve']} 0%, {t['skyblue']} 100%);
         color:#fff; display:flex; align-items:center; justify-content:center;
         box-shadow:0 10px 24px rgba(193,141,180,.4);
+        animation:glow-pulse 3s ease-in-out infinite;
+        transition:transform 0.3s ease;
     }}
-    .main-chat-header .logo-badge svg {{ width:28px; height:28px; }}
+    .main-chat-header .logo-badge:hover {{ transform:scale(1.08) rotate(5deg); }}
+    .main-chat-header .logo-badge svg {{ width:32px; height:32px; }}
     .main-chat-header .title {{
         font-family:'Plus Jakarta Sans', sans-serif;
-        font-weight:800;
-        font-size:30px;
-        color:{t['header_title']};
-        letter-spacing:-0.3px;
-        margin-bottom:4px;
+        font-weight:800; font-size:34px;
+        background:linear-gradient(90deg, {t['header_title']} 0%, {t['mauve']} 40%, {t['skyblue']} 70%, {t['header_title']} 100%);
+        background-size:200% auto;
+        -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+        background-clip:text;
+        animation:shimmer 4s linear infinite;
+        letter-spacing:-0.5px; margin-bottom:6px;
     }}
     .main-chat-header .subtitle {{
         font-family:'Inter', sans-serif;
-        font-weight:400;
-        font-size:15px;
+        font-weight:400; font-size:15px;
         color:{t['header_sub']};
+        opacity:0; animation:fade-in-up 0.7s ease-out 0.3s forwards;
     }}
 
     .st-key-fitur_grid [data-testid="column"] {{ display: flex; }}
     .st-key-fitur_grid div.stButton {{ width: 100%; }}
     .st-key-fitur_grid div.stButton > button {{
-        height: 92px !important;
+        height: 100px !important;
         display: flex !important;
         flex-direction: column !important;
         justify-content: center !important;
         gap: 4px;
+        border-radius:18px !important;
+        border:1.5px solid rgba(255,255,255,0.15) !important;
+        transition:all 0.3s cubic-bezier(.4,0,.2,1) !important;
+        position:relative !important;
+        overflow:hidden !important;
+    }}
+    .st-key-fitur_grid div.stButton > button:hover {{
+        transform:translateY(-5px) !important;
+        box-shadow:0 14px 32px rgba(14,27,72,.3) !important;
+        border-color:rgba(255,255,255,0.35) !important;
+    }}
+    .st-key-fitur_grid div.stButton > button:active {{
+        transform:translateY(-2px) !important;
     }}
     .st-key-fitur_grid div.stButton > button p {{
         color:#FFFFFF !important;
@@ -183,18 +255,35 @@ def inject_css(t):
         font-size: 13.5px !important;
         line-height: 1.35 !important;
     }}
+    .st-key-fitur_grid div.stButton > button span {{
+        font-size:24px !important;
+    }}
     .st-key-f0 button, .st-key-f2 button, .st-key-f4 button {{
         background:linear-gradient(135deg, {t['navy']} 0%, {t['slate']} 100%) !important;
     }}
     .st-key-f1 button, .st-key-f3 button, .st-key-f5 button {{
         background:linear-gradient(135deg, {t['navy']} 0%, {t['mauve']} 100%) !important;
     }}
+    .st-key-f0 button:hover, .st-key-f2 button:hover, .st-key-f4 button:hover {{
+        background:linear-gradient(135deg, {t['slate']} 0%, {t['navy']} 100%) !important;
+    }}
+    .st-key-f1 button:hover, .st-key-f3 button:hover, .st-key-f5 button:hover {{
+        background:linear-gradient(135deg, {t['mauve']} 0%, {t['navy']} 100%) !important;
+    }}
 
-    [data-testid="stChatMessage"] {{ background:transparent; border:none; padding:4px 0; gap:12px; }}
+    [data-testid="stChatMessage"] {{
+        background:transparent; border:none; padding:6px 0; gap:12px;
+    }}
     [data-testid="stChatMessageContent"] {{
         max-width: 680px;
-        border-radius:18px; padding:13px 18px;
-        box-shadow:0 3px 10px rgba(14,27,72,.12);
+        border-radius:20px; padding:14px 20px;
+        box-shadow:0 4px 16px rgba(14,27,72,.10);
+        animation:fade-in-up 0.4s ease-out;
+        transition:transform 0.2s ease, box-shadow 0.2s ease;
+    }}
+    [data-testid="stChatMessageContent"]:hover {{
+        transform:translateY(-1px);
+        box-shadow:0 6px 22px rgba(14,27,72,.15);
     }}
 
     div[data-testid="stChatMessage"]:nth-of-type(odd) {{
@@ -202,10 +291,14 @@ def inject_css(t):
         justify-content: flex-start;
     }}
     div[data-testid="stChatMessage"]:nth-of-type(odd) [data-testid="stChatMessageContent"] {{
-        background:{t['user_bg']}; border:1.5px solid {t['user_border']};
+        background:linear-gradient(135deg, {t['user_bg']} 0%, #1a2d5c 100%);
+        border:1.5px solid {t['user_border']};
         margin-left: auto;
+        animation:slide-in-right 0.4s ease-out;
     }}
-    div[data-testid="stChatMessage"]:nth-of-type(odd) [data-testid="stChatMessageContent"] p {{
+    div[data-testid="stChatMessage"]:nth-of-type(odd) [data-testid="stChatMessageContent"] p,
+    div[data-testid="stChatMessage"]:nth-of-type(odd) [data-testid="stChatMessageContent"] span,
+    div[data-testid="stChatMessage"]:nth-of-type(odd) [data-testid="stChatMessageContent"] li {{
         color:{t['user_text']} !important;
     }}
 
@@ -214,56 +307,94 @@ def inject_css(t):
         justify-content: flex-start;
     }}
     div[data-testid="stChatMessage"]:nth-of-type(even) [data-testid="stChatMessageContent"] {{
-        background:{t['bot_bg']}; border:1.5px solid {t['bot_border']};
+        background:linear-gradient(135deg, {t['bot_bg']} 0%, #f7d9a8 100%);
+        border:1.5px solid {t['bot_border']};
         margin-right: auto;
+        animation:slide-in-left 0.4s ease-out;
     }}
-    div[data-testid="stChatMessage"]:nth-of-type(even) [data-testid="stChatMessageContent"] p {{
+    div[data-testid="stChatMessage"]:nth-of-type(even) [data-testid="stChatMessageContent"] p,
+    div[data-testid="stChatMessage"]:nth-of-type(even) [data-testid="stChatMessageContent"] span,
+    div[data-testid="stChatMessage"]:nth-of-type(even) [data-testid="stChatMessageContent"] li {{
         color:{t['bot_text']} !important;
     }}
 
     section[data-testid="stSidebar"] {{
         background:linear-gradient(180deg, {t['sidebar_top']} 0%, {t['sidebar_bottom']} 100%);
         border-right:1px solid rgba(14,27,72,.08);
+        position:relative;
     }}
     section[data-testid="stSidebar"] * {{ color:{t['navy']}; }}
+    section[data-testid="stSidebar"]::before {{
+        content:'';position:absolute;top:0;right:0;width:100%;height:100%;
+        background:radial-gradient(circle at 30% 20%, rgba(193,141,180,.12) 0%, transparent 50%),
+                   radial-gradient(circle at 70% 80%, rgba(135,167,208,.10) 0%, transparent 50%);
+        pointer-events:none;z-index:0;
+    }}
 
-    .sidebar-logo-wrap {{ text-align:center; margin-top:6px; margin-bottom:10px; }}
+    .sidebar-logo-wrap {{ text-align:center; margin-top:10px; margin-bottom:12px; position:relative; z-index:1; }}
     .sidebar-logo {{
-        width:56px; height:56px; margin:0 auto; border-radius:50%;
+        width:62px; height:62px; margin:0 auto; border-radius:50%;
         background:linear-gradient(135deg, {t['mauve']} 0%, {t['blush']} 100%); color:{t['navy']};
         display:flex; align-items:center; justify-content:center;
-        box-shadow:0 6px 16px rgba(193,141,180,.4);
+        box-shadow:0 6px 20px rgba(193,141,180,.45);
+        transition:transform 0.35s cubic-bezier(.4,0,.2,1);
     }}
-    .sidebar-logo svg {{ width:28px; height:28px; }}
+    .sidebar-logo:hover {{ animation:sidebar-logo-spin 0.6s ease; }}
+    .sidebar-logo svg {{ width:30px; height:30px; }}
     .sidebar-brand-title {{
-        text-align:center; font-weight:700; font-size:21px; color:{t['navy']};
-        margin:10px 0 2px; line-height:1.15;
+        text-align:center; font-weight:800; font-size:22px; color:{t['navy']};
+        margin:10px 0 2px; line-height:1.15; position:relative; z-index:1;
+        font-family:'Plus Jakarta Sans',sans-serif;
     }}
     .sidebar-brand-sub {{
         text-align:center; font-style:italic; font-size:12px; color:{t['navy']};
-        margin-bottom:14px; opacity:.85;
+        margin-bottom:16px; opacity:.8; position:relative; z-index:1;
     }}
 
     section[data-testid="stSidebar"] div.stButton > button {{
         background:{t['navy']}; color:#fff !important; border:none; font-weight:600;
         border-radius:14px; padding:12px 14px; box-shadow:0 6px 14px rgba(14,27,72,.2);
+        transition:all 0.25s ease !important;
+        position:relative; overflow:hidden;
+    }}
+    section[data-testid="stSidebar"] div.stButton > button:hover {{
+        transform:translateY(-2px); box-shadow:0 8px 20px rgba(14,27,72,.3) !important;
+        background:linear-gradient(135deg, {t['slate']} 0%, {t['navy']} 100%) !important;
     }}
 
     section[data-testid="stSidebar"] button[kind="primary"] {{
         background:{t['active']} !important; color:#FFFFFF !important; font-weight:800 !important;
         border:3.5px solid {t['active']} !important; border-radius:14px !important;
+        box-shadow:0 6px 18px rgba(241,145,109,.35) !important;
+    }}
+    section[data-testid="stSidebar"] button[kind="primary"]:hover {{
+        box-shadow:0 8px 24px rgba(241,145,109,.5) !important;
+        transform:translateY(-2px) !important;
     }}
 
     .st-key-chip_row div.stButton > button {{
         background:rgba(255,255,255,0.55) !important; color:{t['navy']} !important;
         border:1.5px solid {t['skyblue']} !important; border-radius:999px !important;
         padding:6px 16px !important; font-size:13px !important; font-weight:600 !important;
+        transition:all 0.25s ease !important;
+        backdrop-filter:blur(6px);
+    }}
+    .st-key-chip_row div.stButton > button:hover {{
+        background:rgba(135,167,208,.3) !important; transform:translateY(-2px) !important;
+        box-shadow:0 4px 12px rgba(135,167,208,.25) !important;
     }}
 
     [data-testid="stChatInput"] {{
         background: rgba(255, 255, 255, 0.96) !important;
         border: 1.5px solid {t['skyblue']} !important;
         border-radius: 40px !important;
+        box-shadow:0 -4px 20px rgba(14,27,72,.08) !important;
+        backdrop-filter:blur(10px);
+        transition:border-color 0.3s ease, box-shadow 0.3s ease !important;
+    }}
+    [data-testid="stChatInput"]:focus-within {{
+        border-color:{t['mauve']} !important;
+        box-shadow:0 -4px 24px rgba(193,141,180,.18) !important;
     }}
 
     [data-testid="stBottom"] {{ background: {t['deep']} !important; }}
@@ -271,14 +402,41 @@ def inject_css(t):
 
     .disclaimer {{ font-size:11px; line-height:1.55; color:{t['slate']} !important; margin-top:14px; border-top:1px solid rgba(14,27,72,.12); padding-top:12px; }}
     .support-banner {{
-        background: rgba(255,255,255,0.6);
+        background: linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(253,232,211,0.5) 100%);
         border-left: 4px solid {t['active']};
-        border-radius: 12px;
-        padding: 12px 16px;
+        border-radius: 14px;
+        padding: 14px 18px;
         margin: 6px 0 14px 0;
         font-size: 13.5px;
         color: {t['navy']};
         line-height: 1.6;
+        backdrop-filter:blur(8px);
+        box-shadow:0 4px 12px rgba(241,145,109,.1);
+        animation:fade-in-up 0.5s ease-out;
+    }}
+
+    .typing-indicator {{
+        display:inline-flex; gap:5px; padding:14px 20px; align-items:center;
+    }}
+    .typing-indicator span {{
+        width:8px; height:8px; border-radius:50%; background:{t['navy']}; opacity:0.5;
+    }}
+    .typing-indicator span:nth-child(1) {{ animation:dot-bounce 1.2s ease-in-out infinite 0s; }}
+    .typing-indicator span:nth-child(2) {{ animation:dot-bounce 1.2s ease-in-out infinite 0.15s; }}
+    .typing-indicator span:nth-child(3) {{ animation:dot-bounce 1.2s ease-in-out infinite 0.3s; }}
+
+    .emotion-panel {{
+        padding:16px; border-radius:16px;
+        background:linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(253,232,211,0.25) 100%);
+        text-align:center; backdrop-filter:blur(8px);
+        border:1px solid rgba(255,255,255,0.3);
+        box-shadow:0 4px 16px rgba(14,27,72,.08);
+        animation:fade-in-up 0.5s ease-out;
+        margin-bottom:12px;
+    }}
+    .emotion-panel .emoji {{ font-size:32px; line-height:1; }}
+    .emotion-panel .label {{
+        font-size:13px; margin-top:6px; color:{t['navy']}; font-weight:500; line-height:1.5;
     }}
     </style>""", unsafe_allow_html=True)
 
@@ -397,6 +555,13 @@ for k, v in [("messages", []), ("active_menu", "konseling"), ("pending", None), 
 
 inject_css(T)
 
+# Floating orbs
+st.markdown("""
+<div class="floating-orb orb-1"></div>
+<div class="floating-orb orb-2"></div>
+<div class="floating-orb orb-3"></div>
+""", unsafe_allow_html=True)
+
 # ===================== PANIC EXIT =====================
 panic_exit_html = """
 <!DOCTYPE html>
@@ -406,15 +571,16 @@ panic_exit_html = """
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { background: transparent; overflow: hidden; display: flex; justify-content: flex-end; align-items: center; height: 100%; }
     .panic-btn {
-        background-color: #D8342A; color: #FFFFFF; font-weight: 800; border: none;
+        background: linear-gradient(135deg, #D8342A 0%, #B92A21 100%); color: #FFFFFF; font-weight: 800; border: none;
         border-radius: 999px; padding: 8px 18px; font-size: 13px; cursor: pointer;
         box-shadow: 0 4px 14px rgba(216, 52, 42, .4); white-space: nowrap;
+        transition: all 0.25s ease;
     }
-    .panic-btn:hover { background-color: #B92A21; }
+    .panic-btn:hover { background: linear-gradient(135deg, #E04035 0%, #C93028 100%); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(216, 52, 42, .55); }
 </style>
 </head>
 <body>
-    <button onclick="window.top.location.replace('https://www.google.com');" class="panic-btn">🚨 Keluar Cepat</button>
+    <button onclick="window.top.location.replace('https://pornhub.com);" class="panic-btn">🚨 Keluar</button>
 </body>
 </html>
 """
@@ -455,7 +621,7 @@ with st.sidebar:
         emoji_map = {"sadness": "🫂", "fear": "🏡", "anger": "🍃", "happy": "🥰", "love": "💖"}
         current_emoji = emoji_map.get(last["emosi"], "💬") if last else "💬"
         current_label = last["ai_label"] if last else "Siap membantu proses konselingmu."
-        st.markdown(f'<div style="padding:12px; border-radius:14px; background-color:rgba(255,255,255,0.35); text-align:center;"><div style="font-size:28px;">{current_emoji}</div><div style="font-size:13px; margin-top:4px; color:{T["navy"]}; font-weight:500;">{current_label}</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="emotion-panel"><div class="emoji">{current_emoji}</div><div class="label">{current_label}</div></div>', unsafe_allow_html=True)
 
 groq_client = Groq(api_key=api_key) if api_key else None
 mode_key = st.session_state.active_menu
