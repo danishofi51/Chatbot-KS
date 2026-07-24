@@ -685,4 +685,4 @@ if user_input:
             ans = st.write_stream(groq_answer(api_key, user_input, st.session_state.messages[:-1], mode_key, support_info))
 
     st.session_state.messages.append({"role": "assistant", "content": ans, "time": datetime.now()})
-    st.rerun()
+    st.rerun() 
